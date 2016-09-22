@@ -7,8 +7,7 @@ uses
 
 type
 
-  TDataDogStatsClientInter = interface(IInterface)
-    procedure Stop; overload;
+  IDataDogStatsClient = interface(IInterface)
     procedure Count(Aspect: TDataDogAspect; Delta: Int64; Tags: TDataDogTags); overload;
     procedure Count(Aspect: TDataDogAspect; Delta: Int64; SampleRate: Double; Tags: TDataDogTags); overload;
     procedure IncrementCounter(Aspect: TDataDogAspect; Tags: TDataDogTags); overload;
@@ -40,8 +39,6 @@ type
     procedure Histogram(Aspect: TDataDogAspect; Value: Int64; Tags: TDataDogTags); overload;
     procedure Histogram(Aspect: TDataDogAspect; Value: Int64; SampleRate: Double; Tags: TDataDogTags); overload;
     procedure RecordEvent(Event: TDataDogEvent; Tags: TDataDogTags); overload;
-    procedure RecordServiceCheckRun(ServiceCheck: TDataDogServiceCheck); overload;
-    procedure ServiceCheck(ServiceCheck: TDataDogServiceCheck); overload;
     procedure RecordSetValue(Aspect: TDataDogAspect; Value: string; Tags: TDataDogTags); overload;
   end;
 

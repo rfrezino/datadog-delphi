@@ -15,11 +15,15 @@ type
     FTimeStamp: Cardinal;
     FTags: TDataDogTags;
     FMessageText: string;
+    FPort: Integer;
   public
+    constructor Create;
+
     function ToStatsDString: string;
 
     property Name: string read FName write FName;
     property Hostname: string read FHostname write FHostname;
+    property Port: Integer read FPort write FPort;
     property Status: TDataDogServiceStatus read FStatus write FStatus;
     property MessageText: string read FMessageText write FMessageText;
     property RunId: Integer read FRunId write FRunId;
@@ -33,6 +37,13 @@ uses
 	System.SysUtils, delphiDatadog.utils;
 
 { TDataDogServiceCheck }
+
+constructor TDataDogServiceCheck.Create;
+begin
+  FHostname := 'localhost';
+  FStatus := dssUndefined;
+  FPort := 8125;
+end;
 
 function TDataDogServiceCheck.ToStatsDString: string;
 var

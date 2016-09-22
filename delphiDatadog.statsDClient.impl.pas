@@ -4,16 +4,20 @@ interface
 
 uses
 	delphiDatadog.statsDClient.interf, delphiDatadog.header, delphiDatadog.serviceCheck,
-  delphiDatadog.event;
+  delphiDatadog.event, delphiDatadog.statsDClientSender.interf;
 
 type
-  TDataDogStatsClientImpl = class(TInterfacedObject, TDataDogStatsClientInter)
+  TDataDogStatsClientImpl = class(TInterfacedObject, IDataDogStatsClient)
   private
     FPrefix: string;
+    FSender: IDataDogStatsClientSender;
+
     procedure Send(Content: string);
     function IsInvalidSample(Sample: Double): Boolean;
   public
-    procedure Stop; overload;
+    constructor Create(var Sender: IDataDogStatsClientSender);
+    destructor Destroy; override;
+
     procedure Count(Aspect: TDataDogAspect; Delta: Int64; Tags: TDataDogTags); overload;
     procedure Count(Aspect: TDataDogAspect; Delta: Int64; SampleRate: Double; Tags: TDataDogTags); overload;
     procedure IncrementCounter(Aspect: TDataDogAspect; Tags: TDataDogTags); overload;
@@ -45,12 +49,9 @@ type
     procedure Histogram(Aspect: TDataDogAspect; Value: Int64; Tags: TDataDogTags); overload;
     procedure Histogram(Aspect: TDataDogAspect; Value: Int64; SampleRate: Double; Tags: TDataDogTags); overload;
     procedure RecordEvent(Event: TDataDogEvent; Tags: TDataDogTags); overload;
-    procedure RecordServiceCheckRun(ServiceCheck: TDataDogServiceCheck); overload;
-    procedure ServiceCheck(ServiceCheck: TDataDogServiceCheck); overload;
     procedure RecordSetValue(Aspect: TDataDogAspect; Value: string; Tags: TDataDogTags); overload;
 
     property Prefix: string read FPrefix write FPrefix;
-
   end;
 
 implementation
@@ -75,6 +76,11 @@ begin
   Send(Format('%s%s:%d|c|%f%s', [Prefix, Aspect, Delta, sampleRate, DataTagsToText(Tags)]));
 end;
 
+constructor TDataDogStatsClientImpl.Create(var Sender: IDataDogStatsClientSender);
+begin
+  FSender := Sender;
+end;
+
 procedure TDataDogStatsClientImpl.Decrement(Aspect: TDataDogAspect; Tags: TDataDogTags);
 begin
   DecrementCounter(Aspect, Tags);
@@ -93,6 +99,12 @@ end;
 procedure TDataDogStatsClientImpl.DecrementCounter(Aspect: TDataDogAspect; SampleRate: Double; Tags: TDataDogTags);
 begin
   Count(Aspect, -1, SampleRate, Tags);
+end;
+
+destructor TDataDogStatsClientImpl.Destroy;
+begin
+
+  inherited;
 end;
 
 procedure TDataDogStatsClientImpl.Gauge(Aspect: TDataDogAspect; Value: Int64; Tags: TDataDogTags);
@@ -229,29 +241,14 @@ begin
   Send(Format('%s%s:%d|h|%f%s', [Prefix, Aspect, Value, SampleRate, DataTagsToText(Tags)]));
 end;
 
-procedure TDataDogStatsClientImpl.RecordServiceCheckRun(ServiceCheck: TDataDogServiceCheck);
-begin
-
-end;
-
 procedure TDataDogStatsClientImpl.RecordSetValue(Aspect: TDataDogAspect; Value: string; Tags: TDataDogTags);
 begin
-
+  Send(Format('%s%s:%s|s%s', [Prefix, Aspect, Value, DataTagsToText(Tags)]));
 end;
 
 procedure TDataDogStatsClientImpl.Send(Content: string);
 begin
-
-end;
-
-procedure TDataDogStatsClientImpl.ServiceCheck(ServiceCheck: TDataDogServiceCheck);
-begin
-
-end;
-
-procedure TDataDogStatsClientImpl.Stop;
-begin
-
+  FSender.Send(Content);
 end;
 
 procedure TDataDogStatsClientImpl.Time(Aspect: TDataDogAspect; Value: Int64; SampleRate: Double; Tags: TDataDogTags);

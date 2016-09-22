@@ -6,7 +6,7 @@ type
   TDataDogTag = string;
   TDataDogAspect = string;
 
-  TDataDogTags = array of TDataDogTag;
+  TDataDogTags = TArray<TDataDogTag>;
 
   TDataDogEventPriority = (ddLow, ddNormal);
 

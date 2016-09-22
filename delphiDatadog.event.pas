@@ -21,7 +21,7 @@ type
 
     property Title: string read FTitle write FTitle;
     property Text: string read FText write FText;
-    property MillisSinceEpoch: Int64 read FMillisSinceEpoch write FMillisSinceEpoch default -1;
+    property MillisSinceEpoch: Int64 read FMillisSinceEpoch write FMillisSinceEpoch;
     property HostName: string read FHostName write FHostName;
     property AggregationKey: string read FAggregationKey write FAggregationKey;
     property Priority: TDataDogEventPriority read FPriority write FPriority;
@@ -45,7 +45,7 @@ var
 begin
   MapParams := TStringBuilder.Create;
   try
-    if (MillisSinceEpoch <> -1) then
+    if (MillisSinceEpoch <> 0) then
     begin
       DoubleResult := MillisSinceEpoch / 1000;
       MapParams.Append('|d:').Append(DoubleResult);
