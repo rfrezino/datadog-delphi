@@ -10,6 +10,7 @@ type
   TfrmDemo = class(TForm)
     btnSendMetrics: TButton;
     procedure btnSendMetricsClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     StatsDClient: IDataDogStatsClient;
     { Private declarations }
@@ -30,28 +31,28 @@ uses
 
 procedure TfrmDemo.btnSendMetricsClick(Sender: TObject);
 var
-  SenderStatsDClient: IDataDogStatsClientSender;
-  DataDogService: TDataDogServiceCheck;
   Event: TDataDogEvent;
 begin
-  if StatsDClient = nil then
-  begin
-    DataDogService := TDataDogServiceCheck.Create;
-    SenderStatsDClient := TDataDogStatsClientSender.Create(DataDogService);
-    StatsDClient := TDataDogStatsClientImpl.Create(SenderStatsDClient);
-  end;
-
-  StatsDClient.Count('time', 1, TDataDogTags.Create('rodrigo', 'farias'));
-  StatsDClient.RecordExecutionTime('testBM', Random(500), TDataDogTags.Create('benchmarkRodrigo'));
+  StatsDClient.Count('qtt', 1, TDataDogTags.Create('mob', 'foo'));
+  StatsDClient.RecordExecutionTime('testBM', Random(500), TDataDogTags.Create('valueX'));
 
   Event := TDataDogEvent.Create;
   Event.Title := 'Error on report';
-  Event.Text := 'Error while trying to translate the rCprReportIntake';
+  Event.Text := 'Error while trying to translate the report';
   Event.Priority := ddLow;
   Event.AlertType := ddError;
   StatsDClient.RecordEvent(Event, TDataDogTags.Create('eventTest'));
   Event.Free;
+end;
 
+procedure TfrmDemo.FormCreate(Sender: TObject);
+var
+  SenderStatsDClient: IDataDogStatsClientSender;
+  DataDogService: TDataDogServiceCheck;
+begin
+  DataDogService := TDataDogServiceCheck.Create;
+  SenderStatsDClient := TDataDogStatsClientSender.Create(DataDogService);
+  StatsDClient := TDataDogStatsClientImpl.Create(SenderStatsDClient);
 end;
 
 end.

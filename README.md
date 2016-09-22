@@ -1,6 +1,8 @@
 # datadog-delphi
 Delphi implementation for DataDog API
 
-This can not be used yet.
+Version 1.0!
 
-Version 0.1!
+[https://www.datadoghq.com/](https://www.datadoghq.com/)
+
+
