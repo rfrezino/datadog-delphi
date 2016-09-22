@@ -1,7 +1,10 @@
 # datadog-delphi
-Delphi implementation for DataDog API
+
+A statsd client library implemented in Delphi. Allows for Java applications to easily communicate with statsd.
 
 Version 1.0!
+
+Check the demo to see how does it works :)
 
 [https://www.datadoghq.com/](https://www.datadoghq.com/)
 
