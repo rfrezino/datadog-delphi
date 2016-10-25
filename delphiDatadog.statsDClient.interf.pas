@@ -40,6 +40,9 @@ type
     procedure Histogram(Aspect: TDataDogAspect; Value: Int64; SampleRate: Double; Tags: TDataDogTags); overload;
     procedure RecordEvent(Event: TDataDogEvent; Tags: TDataDogTags); overload;
     procedure RecordSetValue(Aspect: TDataDogAspect; Value: string; Tags: TDataDogTags); overload;
+
+    function GetPrefix: string;
+    procedure SetPrefix(Value: string);
   end;
 
 

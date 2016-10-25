@@ -16,14 +16,16 @@ type
     FTags: TDataDogTags;
     FMessageText: string;
     FPort: Integer;
+    procedure SetHostname(const Value: string);
+    procedure SetPort(const Value: Integer);
   public
     constructor Create;
 
     function ToStatsDString: string;
 
     property Name: string read FName write FName;
-    property Hostname: string read FHostname write FHostname;
-    property Port: Integer read FPort write FPort;
+    property Hostname: string read FHostname write SetHostname;
+    property Port: Integer read FPort write SetPort;
     property Status: TDataDogServiceStatus read FStatus write FStatus;
     property MessageText: string read FMessageText write FMessageText;
     property RunId: Integer read FRunId write FRunId;
@@ -36,13 +38,33 @@ implementation
 uses
 	System.SysUtils, delphiDatadog.utils;
 
+const
+  STAND_PORT = 8125;
+  STAND_HOST = 'localhost';
+
 { TDataDogServiceCheck }
 
 constructor TDataDogServiceCheck.Create;
 begin
-  FHostname := 'localhost';
+  FHostname := STAND_HOST;
   FStatus := dssUndefined;
-  FPort := 8125;
+  FPort := STAND_PORT;
+end;
+
+procedure TDataDogServiceCheck.SetHostname(const Value: string);
+begin
+  if Value.IsEmpty then
+    FHostname := STAND_HOST
+  else
+    FHostname := Value;
+end;
+
+procedure TDataDogServiceCheck.SetPort(const Value: Integer);
+begin
+  if Value = 0 then
+    FPort :=  STAND_PORT
+  else
+    FPort := Value;
 end;
 
 function TDataDogServiceCheck.ToStatsDString: string;

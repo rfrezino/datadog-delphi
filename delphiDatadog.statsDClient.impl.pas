@@ -14,6 +14,9 @@ type
 
     procedure Send(Content: string);
     function IsInvalidSample(Sample: Double): Boolean;
+
+    function GetPrefix: string;
+    procedure SetPrefix(Value: string);
   public
     constructor Create(var Sender: IDataDogStatsClientSender);
     destructor Destroy; override;
@@ -51,7 +54,7 @@ type
     procedure RecordEvent(Event: TDataDogEvent; Tags: TDataDogTags); overload;
     procedure RecordSetValue(Aspect: TDataDogAspect; Value: string; Tags: TDataDogTags); overload;
 
-    property Prefix: string read FPrefix write FPrefix;
+    property Prefix: string read GetPrefix write SetPrefix;
   end;
 
 implementation
@@ -125,6 +128,11 @@ end;
 procedure TDataDogStatsClientImpl.Gauge(Aspect: TDataDogAspect; Value: Int64; SampleRate: Double; Tags: TDataDogTags);
 begin
   RecordGaugeValue(Aspect, Value, SampleRate, Tags);
+end;
+
+function TDataDogStatsClientImpl.GetPrefix: string;
+begin
+  Result := FPrefix;
 end;
 
 procedure TDataDogStatsClientImpl.Histogram(Aspect: TDataDogAspect; Value, SampleRate: Double; Tags: TDataDogTags);
@@ -249,6 +257,11 @@ end;
 procedure TDataDogStatsClientImpl.Send(Content: string);
 begin
   FSender.Send(Content);
+end;
+
+procedure TDataDogStatsClientImpl.SetPrefix(Value: string);
+begin
+  FPrefix := Value;
 end;
 
 procedure TDataDogStatsClientImpl.Time(Aspect: TDataDogAspect; Value: Int64; SampleRate: Double; Tags: TDataDogTags);

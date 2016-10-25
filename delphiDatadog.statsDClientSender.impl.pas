@@ -125,9 +125,12 @@ var
 begin
   ConfigureUDP;
   MessagensToSend := GetMessagesToSend;
-
-  for MessageTxt in MessagensToSend do
-    FUDPCom.Send(MessageTxt);
+  try
+    for MessageTxt in MessagensToSend do
+      FUDPCom.Send(MessageTxt);
+  finally
+    MessagensToSend.Free;
+  end;
 end;
 
 end.
